@@ -1,10 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-5" style="max-width: 1100px; background: transparent;">
-    <div class="row g-4">
+<div class="container-fluid" style="max-width: 1400px;">
+    <div class="row">
         <!-- Main Content -->
         <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <a href="/courses" class="btn d-flex align-items-center gap-2 mb-2" style="background: transparent; color: #8cb33a; border: 1px solid #8cb33a; border-radius: 8px; font-weight: 600; font-size: 0.9em;">
+                        <i class="bi bi-arrow-left"></i> Back to Courses
+                    </a>
+                    <h1 class="mb-0" style="font-size: 2.2em; font-weight: bold; color: #101828;">Soil Science Fundamentals</h1>
+                    <p class="text-muted mb-0" style="font-size: 1.1em;">Master the basics of soil science and sustainable agriculture</p>
+                </div>
+            </div>
             <!-- Hero/Header Section -->
             <div class="mb-4">
                 <div class="mb-2 d-flex align-items-center gap-2">
@@ -182,6 +191,7 @@ function renderLessons() {
     let html = '';
     mockCourse.lessons.forEach((lesson, idx) => {
         const isCompleted = lesson.is_completed;
+        const lessonUrl = `/courses/1/lessons/${lesson.id}`;
         html += `<div class="d-flex align-items-center justify-content-between p-3 mb-2 rounded-3 ${isCompleted ? '' : 'bg-white'}" style="border: 1px solid #e5e7eb; background: ${isCompleted ? '#eaf5d3' : '#fff'};">
             <div class="d-flex align-items-center gap-2">
                 <span class="badge" style="background: #8cb33a; color: #fff; font-weight: 600; border-radius: 999px; font-size: 1em;">Lesson ${lesson.order}</span>
@@ -190,6 +200,7 @@ function renderLessons() {
             <div class="d-flex align-items-center gap-2">
                 <span class="badge" style="background: #fff; color: #101828; font-weight: 600; border-radius: 8px; font-size: 1em; border: 1px solid #e5e7eb;">${lesson.duration}</span>
                 <span class="badge" style="background: #fff; color: #101828; font-weight: 600; border-radius: 8px; font-size: 1em; border: 1px solid #e5e7eb;"><i class="bi bi-${lesson.type === 'video' ? 'camera-video' : 'book'} me-1"></i>${lesson.type}</span>
+                <a href="${lessonUrl}" class="btn btn-sm d-flex align-items-center gap-1" style="background: #8cb33a; color: #fff; border-radius: 8px; font-weight: 600; border: 1.5px solid #8cb33a; font-size: 1em;">${isCompleted ? '<i class=\'bi bi-arrow-repeat\'></i> Review' : '<i class=\'bi bi-play-fill\'></i> Start'}</a>
             </div>
         </div>`;
     });
@@ -204,6 +215,11 @@ $(document).ready(function() {
         $(this).addClass('active').css('color', '#8cb33a').css('border-color', '#8cb33a').css('background', '#fff');
         $('.tab-pane').removeClass('show active');
         $($(this).data('bs-target')).addClass('show active');
+    });
+    // In renderCourseDetail, update sidebar button to link to first incomplete lesson
+    $('#enrollBtn').off('click').on('click', function() {
+        const firstIncomplete = mockCourse.lessons.find(l => !l.is_completed) || mockCourse.lessons[0];
+        window.location.href = `/courses/1/lessons/${firstIncomplete.id}`;
     });
 });
 </script>
