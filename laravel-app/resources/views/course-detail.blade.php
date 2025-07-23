@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid" style="max-width: 1400px;">
+<div class="container-fluid py-5" style="max-width: 1400px;">
     <div class="row">
         <!-- Main Content -->
         <div class="col-lg-8">
@@ -10,217 +10,293 @@
                     <a href="/courses" class="btn d-flex align-items-center gap-2 mb-2" style="background: transparent; color: #8cb33a; border: 1px solid #8cb33a; border-radius: 8px; font-weight: 600; font-size: 0.9em;">
                         <i class="bi bi-arrow-left"></i> Back to Courses
                     </a>
-                    <h1 class="mb-0" style="font-size: 2.2em; font-weight: bold; color: #101828;">Soil Science Fundamentals</h1>
-                    <p class="text-muted mb-0" style="font-size: 1.1em;">Master the basics of soil science and sustainable agriculture</p>
                 </div>
             </div>
+
             <!-- Hero/Header Section -->
             <div class="mb-4">
-                <div class="mb-2 d-flex align-items-center gap-2">
-                    <span class="badge" style="background: #F2F4F7; color: #344054; font-weight: 500; border-radius: 999px; font-size: 1em;" id="courseCategory"><i class="bi bi-leaf me-1"></i>Soil Health</span>
-                    <span class="badge" style="background: #D1FADF; color: #12B76A; font-weight: 500; border-radius: 999px; font-size: 1em;" id="courseLevel"><i class="bi bi-bar-chart me-1"></i>Beginner</span>
-                    <span class="badge" style="background: #FEF9C3; color: #FEC84B; font-weight: 500; border-radius: 999px; font-size: 1em;" id="courseType"><i class="bi bi-lightbulb me-1"></i>Theory</span>
-                </div>
-                <h1 class="fw-bold mb-2" id="courseTitle" style="font-size: 2.2rem; color: #101828;">Course Title</h1>
-                <div class="d-flex align-items-center gap-4 text-muted mb-2" style="font-size: 1.1em;">
-                    <span><i class="bi bi-clock me-1"></i> <span id="courseDuration">2h 30m</span></span>
-                    <span><i class="bi bi-journal-text me-1"></i> <span id="courseLessons">8 lessons</span></span>
-                    <span><i class="bi bi-calendar me-1"></i> <span id="courseUpdated">Updated 2024-06-01</span></span>
-                </div>
-                <div class="mb-2" id="progressBarSection" style="display: none;">
-                    <label class="mb-1">Course Progress</label>
-                    <div class="progress mb-1" style="height: 10px; background: #eaf5d3;">
-                        <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%; background: #8cb33a;">0%</div>
+                <div class="card shadow-sm border-0" style="border-radius: 18px; overflow: hidden;">
+                    <div class="position-relative" style="height: 200px;">
+                        <img src="{{ $course->cover_image ?: '/how-to-thumbnails-languages/grow-courses.jpeg' }}" class="w-100 h-100" style="object-fit: cover;" alt="Course cover">
                     </div>
-                    <div class="d-flex justify-content-between text-muted" style="font-size: 1em;">
-                        <span id="progressText">0 of 0 lessons completed</span>
-                        <span id="progressPercent">0%</span>
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="badge" style="background: #F2F4F7; color: #344054; font-weight: 500; border-radius: 999px; font-size: 0.85em;">{{ str_replace('-', ' ', $course->category) }}</span>
+                            <span class="badge" style="background: #D1FADF; color: #12B76A; font-weight: 500; border-radius: 999px; font-size: 0.85em;">{{ $course->level }}</span>
+                            <span class="badge" style="background: #FEF9C3; color: #FEC84B; font-weight: 500; border-radius: 999px; font-size: 0.85em;">{{ $course->type }}</span>
+                        </div>
+                        <h1 class="mb-3" style="font-size: 2.2em; font-weight: bold; color: #101828;">{{ $course->title }}</h1>
+                        <p class="text-muted mb-3" style="font-size: 1.1em;">{{ $course->description }}</p>
+                        
+                        <div class="d-flex align-items-center gap-4 mb-3" style="color: #667085; font-size: 0.95em;">
+                            <span><i class="bi bi-clock me-1"></i>{{ $course->duration_hours }} hours</span>
+                            <span><i class="bi bi-journal-text me-1"></i>{{ $course->lessons_count }} lessons</span>
+                            <span><i class="bi bi-calendar me-1"></i>Updated {{ $course->updated_at->format('Y-m-d') }}</span>
+                        </div>
+
+                        <!-- Progress Section -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span style="font-weight: 600; color: #101828;">Course Progress</span>
+                                <span style="color: #667085;">0%</span>
+                            </div>
+                            <div class="progress" style="height: 8px; border-radius: 4px;">
+                                <div class="progress-bar" role="progressbar" style="width: 0%; background-color: #8cb33a;"></div>
+                            </div>
+                            <small class="text-muted">0 of {{ $course->lessons_count }} lessons completed</small>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Tabs -->
-            <ul class="nav nav-tabs mb-3" id="courseTabs" role="tablist" style="--bs-nav-tabs-link-active-border-color: #8cb33a;">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" style="color: #8cb33a; border-color: #8cb33a; font-weight: 600; background: #fff;"> <i class="bi bi-info-circle me-1"></i>Overview</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="curriculum-tab" data-bs-toggle="tab" data-bs-target="#curriculum" type="button" role="tab" style="color: #344054; font-weight: 600; background: #fff;"> <i class="bi bi-list-check me-1"></i>Curriculum</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="instructor-tab" data-bs-toggle="tab" data-bs-target="#instructor" type="button" role="tab" style="color: #344054; font-weight: 600; background: #fff;"> <i class="bi bi-person-badge me-1"></i>Instructor</button>
-                </li>
-            </ul>
-            <div class="tab-content" id="courseTabContent">
-                <div class="tab-pane fade show active" id="overview" role="tabpanel">
-                    <h4 class="mb-3">About This Course</h4>
-                    <p id="courseLongDescription">Long description goes here.</p>
-                    <h5 class="mt-4 mb-2">What You'll Learn</h5>
-                    <ul id="learningObjectives"></ul>
-                    <h5 class="mt-4 mb-2">Prerequisites</h5>
-                    <ul id="prerequisites"></ul>
-                    <div id="courseTags" class="mt-3"></div>
-                </div>
-                <div class="tab-pane fade" id="curriculum" role="tabpanel">
-                    <h4 class="mb-3">Course Curriculum</h4>
-                    <div id="lessonsList"></div>
-                </div>
-                <div class="tab-pane fade" id="instructor" role="tabpanel">
-                    <h4 class="mb-3">Instructor</h4>
-                    <div id="instructorInfo"></div>
+            <div class="card shadow-sm border-0 mb-4" style="border-radius: 18px;">
+                <div class="card-body p-0">
+                    <ul class="nav nav-tabs" id="courseTabs" role="tablist" style="border-bottom: 1px solid #e5e7eb;">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" style="border: none; color: #8cb33a; font-weight: 600; padding: 1rem 1.5rem;">
+                                Overview
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="curriculum-tab" data-bs-toggle="tab" data-bs-target="#curriculum" type="button" role="tab" style="border: none; color: #344054; font-weight: 600; padding: 1rem 1.5rem;">
+                                Curriculum
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="instructor-tab" data-bs-toggle="tab" data-bs-target="#instructor" type="button" role="tab" style="border: none; color: #344054; font-weight: 600; padding: 1rem 1.5rem;">
+                                Instructor
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content p-4" id="courseTabsContent">
+                        <!-- Overview Tab -->
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                            <div class="mb-4">
+                                <h4 style="color: #101828; font-weight: 600; margin-bottom: 1rem;">
+                                    <i class="bi bi-info-circle me-2"></i>About This Course
+                                </h4>
+                                <p style="color: #667085; line-height: 1.6;">{{ $course->description }}</p>
+                            </div>
+
+                            <div class="mb-4">
+                                <h4 style="color: #101828; font-weight: 600; margin-bottom: 1rem;">
+                                    <i class="bi bi-target me-2"></i>What You'll Learn
+                                </h4>
+                                <ul class="list-unstyled">
+                                    <li class="d-flex align-items-start mb-2">
+                                        <i class="bi bi-check-circle-fill me-2 mt-1" style="color: #8cb33a;"></i>
+                                        <span style="color: #667085;">Understand soil basics and composition</span>
+                                    </li>
+                                    <li class="d-flex align-items-start mb-2">
+                                        <i class="bi bi-check-circle-fill me-2 mt-1" style="color: #8cb33a;"></i>
+                                        <span style="color: #667085;">Perform comprehensive soil tests</span>
+                                    </li>
+                                    <li class="d-flex align-items-start mb-2">
+                                        <i class="bi bi-check-circle-fill me-2 mt-1" style="color: #8cb33a;"></i>
+                                        <span style="color: #667085;">Create effective nutrition programs</span>
+                                    </li>
+                                    <li class="d-flex align-items-start mb-2">
+                                        <i class="bi bi-check-circle-fill me-2 mt-1" style="color: #8cb33a;"></i>
+                                        <span style="color: #667085;">Implement sustainable farming practices</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="mb-4">
+                                <h4 style="color: #101828; font-weight: 600; margin-bottom: 1rem;">
+                                    <i class="bi bi-list-check me-2"></i>Prerequisites
+                                </h4>
+                                <ul class="list-unstyled">
+                                    <li class="d-flex align-items-start mb-2">
+                                        <i class="bi bi-circle-fill me-2 mt-1" style="color: #8cb33a; font-size: 0.5em;"></i>
+                                        <span style="color: #667085;">Basic biology knowledge</span>
+                                    </li>
+                                    <li class="d-flex align-items-start mb-2">
+                                        <i class="bi bi-circle-fill me-2 mt-1" style="color: #8cb33a; font-size: 0.5em;"></i>
+                                        <span style="color: #667085;">Interest in agriculture and sustainability</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Curriculum Tab -->
+                        <div class="tab-pane fade" id="curriculum" role="tabpanel">
+                            <h4 style="color: #101828; font-weight: 600; margin-bottom: 1.5rem;">
+                                <i class="bi bi-list-ul me-2"></i>Course Curriculum
+                            </h4>
+                            
+                            @if($course->lessons->count() > 0)
+                                <div class="accordion" id="lessonsAccordion">
+                                    @foreach($chapters as $chapter)
+                                        <div class="chapter-section mb-4">
+                                            <h5 style="color: #8cb33a; font-weight: 600; margin-bottom: 1rem; font-size: 1.1em; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #eaf5d3; padding-bottom: 0.5rem;">
+                                                {{ $chapter['title'] }}
+                                            </h5>
+                                            @foreach($chapter['lessons'] as $lesson)
+                                                <div class="accordion-item border-0 mb-2" style="border-radius: 12px !important; background: #f8fafc;">
+                                                    <h2 class="accordion-header" id="heading{{ $lesson->id }}">
+                                                        <button class="accordion-button collapsed d-flex align-items-center justify-content-between p-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $lesson->id }}" style="background: transparent; border: none; box-shadow: none;">
+                                                            <div class="d-flex align-items-center gap-3">
+                                                                <span class="badge" style="background: #8cb33a; color: #fff; font-weight: 600; border-radius: 999px; font-size: 0.8em;">Lesson {{ $lesson->order }}</span>
+                                                                <span style="font-weight: 600; color: #101828;">{{ $lesson->title }}</span>
+                                                                <span class="badge" style="background: #F2F4F7; color: #344054; font-weight: 500; border-radius: 999px; font-size: 0.75em;">{{ $lesson->type }}</span>
+                                                                <span style="color: #667085; font-size: 0.9em;">{{ $lesson->duration_minutes }} min</span>
+                                                            </div>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                @if($lesson->type === 'quiz')
+                                                                    <span class="badge" style="background: #FEF9C3; color: #FEC84B; font-weight: 500; border-radius: 999px; font-size: 0.75em;">
+                                                                        {{ $lesson->quizQuestions->count() }} questions
+                                                                    </span>
+                                                                @endif
+                                                                <i class="bi bi-chevron-down" style="color: #667085;"></i>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapse{{ $lesson->id }}" class="accordion-collapse collapse" data-bs-parent="#lessonsAccordion">
+                                                        <div class="accordion-body p-3" style="background: #fff; border-top: 1px solid #e5e7eb;">
+                                                            <p style="color: #667085; margin-bottom: 1rem;">{{ Str::limit($lesson->content, 200) }}</p>
+                                                            <a href="/courses/{{ $course->id }}/lessons/{{ $lesson->id }}" class="btn d-flex align-items-center gap-2" style="background: #8cb33a; color: #fff; border-radius: 8px; font-weight: 600; border: 1.5px solid #8cb33a; font-size: 0.9em; width: fit-content;">
+                                                                <i class="bi bi-play-circle"></i> Start Lesson
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-center text-muted py-4">
+                                    <i class="bi bi-list-ul" style="font-size: 3em; color: #d0d5dd;"></i>
+                                    <p class="mt-2">No lessons available yet</p>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Instructor Tab -->
+                        <div class="tab-pane fade" id="instructor" role="tabpanel">
+                            @if($course->instructor)
+                                <div class="d-flex align-items-start gap-4">
+                                    <img src="{{ $course->instructor->avatar ?: 'https://via.placeholder.com/80' }}" class="rounded-circle" width="80" height="80" alt="Instructor">
+                                    <div class="flex-grow-1">
+                                        <h4 style="color: #101828; font-weight: 600; margin-bottom: 0.5rem;">{{ $course->instructor->name }}</h4>
+                                        <p style="color: #667085; margin-bottom: 1rem;">{{ $course->instructor->title }}</p>
+                                        @if($course->instructor->bio)
+                                            <p style="color: #667085; line-height: 1.6;">{{ $course->instructor->bio }}</p>
+                                        @endif
+                                        <div class="d-flex align-items-center gap-3 mt-3">
+                                            @if($course->instructor->email)
+                                                <span style="color: #667085; font-size: 0.9em;">
+                                                    <i class="bi bi-envelope me-1"></i>{{ $course->instructor->email }}
+                                                </span>
+                                            @endif
+                                            @if($course->instructor->website)
+                                                <a href="{{ $course->instructor->website }}" target="_blank" style="color: #8cb33a; text-decoration: none; font-size: 0.9em;">
+                                                    <i class="bi bi-globe me-1"></i>Website
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="text-center text-muted py-4">
+                                    <i class="bi bi-person" style="font-size: 3em; color: #d0d5dd;"></i>
+                                    <p class="mt-2">No instructor assigned</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
         <!-- Sidebar -->
         <div class="col-lg-4">
-            <div class="sticky-top" style="top: 2rem;">
-                <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
-                    <div class="mb-3">
-                        <img id="sidebarImage" src="/how-to-thumbnails-languages/grow-courses.jpeg" alt="Course image" class="w-100 rounded-3 mb-3" style="object-fit: cover; height: 160px;">
-                        <span class="fw-bold fs-3" id="coursePrice">Free</span>
-                        <div class="text-muted small" id="coursePriceDesc">No payment required</div>
+            <div class="card shadow-sm border-0" style="border-radius: 18px; position: sticky; top: 20px;">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <img src="{{ $course->cover_image ?: '/how-to-thumbnails-languages/grow-courses.jpeg' }}" class="img-fluid rounded mb-3" style="width: 100%; height: 150px; object-fit: cover;" alt="Course image">
+                        <h5 style="color: #101828; font-weight: 600; margin-bottom: 0.5rem;">{{ $course->formatted_price }}</h5>
+                        <p style="color: #667085; font-size: 0.9em; margin-bottom: 0;">No payment required</p>
                     </div>
-                    <button class="btn w-100 d-flex align-items-center justify-content-center gap-2 mb-3" id="enrollBtn" style="background: #8cb33a; color: #fff; border-radius: 8px; font-weight: 600; border: 1.5px solid #8cb33a; font-size: 1.1em;">
-                        <i class="bi bi-play-fill"></i> Continue Learning
-                    </button>
-                    <hr>
-                    <div class="mb-2 text-muted">Course includes:</div>
-                    <ul class="list-unstyled mb-0" style="font-size: 1em;">
-                        <li class="mb-2"><i class="bi bi-journal-text me-2 text-success"></i> <span id="sidebarLessons">8 lessons</span></li>
-                        <li class="mb-2"><i class="bi bi-clock me-2 text-success"></i> <span id="sidebarDuration">2h 30m of content</span></li>
-                        <li class="mb-2"><i class="bi bi-chat-dots me-2 text-success"></i> Instructor support</li>
-                        <li class="mb-2"><i class="bi bi-globe me-2 text-success"></i> Full lifetime access</li>
-                    </ul>
+
+                    <div class="d-grid gap-2 mb-4">
+                        @if($course->lessons->count() > 0)
+                            <a href="/courses/{{ $course->id }}/lessons/{{ $course->lessons->first()->id }}" class="btn d-flex align-items-center justify-content-center gap-2" style="background: #8cb33a; color: #fff; border-radius: 8px; font-weight: 600; border: 1.5px solid #8cb33a; font-size: 1em;">
+                                <i class="bi bi-play-circle"></i> Start Learning
+                            </a>
+                        @else
+                            <button class="btn d-flex align-items-center justify-content-center gap-2" disabled style="background: #e5e7eb; color: #9ca3af; border-radius: 8px; font-weight: 600; border: 1.5px solid #e5e7eb; font-size: 1em;">
+                                <i class="bi bi-clock"></i> Coming Soon
+                            </button>
+                        @endif
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 style="color: #101828; font-weight: 600; margin-bottom: 1rem;">Course includes:</h6>
+                        <ul class="list-unstyled">
+                            <li class="d-flex align-items-center mb-2">
+                                <i class="bi bi-journal-text me-2" style="color: #8cb33a;"></i>
+                                <span style="color: #667085; font-size: 0.9em;">{{ $course->lessons_count }} lessons</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-2">
+                                <i class="bi bi-clock me-2" style="color: #8cb33a;"></i>
+                                <span style="color: #667085; font-size: 0.9em;">{{ $course->duration_hours }} hours of content</span>
+                            </li>
+                            @if($course->instructor)
+                                <li class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-person me-2" style="color: #8cb33a;"></i>
+                                    <span style="color: #667085; font-size: 0.9em;">Instructor support</span>
+                                </li>
+                            @endif
+                            <li class="d-flex align-items-center mb-2">
+                                <i class="bi bi-infinity me-2" style="color: #8cb33a;"></i>
+                                <span style="color: #667085; font-size: 0.9em;">Full lifetime access</span>
+                            </li>
+                            @if($course->certification)
+                                <li class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-award me-2" style="color: #8cb33a;"></i>
+                                    <span style="color: #667085; font-size: 0.9em;">Certificate of completion</span>
+                                </li>
+                            @endif
+                        </ul>
+                    </div>
+
+                    @if($course->tags)
+                        <div class="mb-4">
+                            <h6 style="color: #101828; font-weight: 600; margin-bottom: 1rem;">Tags:</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach($course->tags as $tag)
+                                    <span class="badge" style="background: #F2F4F7; color: #344054; font-weight: 500; border-radius: 999px; font-size: 0.8em;">{{ $tag }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Mock Data and jQuery Logic -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-// Mock course data
-const mockCourse = {
-    id: 1,
-    title: 'Soil Therapy Workshop – Understanding your Soil Test & DIY Nutrition Programming',
-    description: 'A practical workshop on soil therapy and nutrition programming.',
-    long_description: 'This course covers the fundamentals of soil health, soil testing, and how to create your own nutrition program for crops.',
-    category: 'Soil Health',
-    level: 'Beginner',
-    type: 'Theory',
-    lessons: [
-        { id: 101, title: 'Chapter 1 Introduction – Unlocking the Hidden Language of Your Soil', description: '', type: 'reading', order: 1, duration: '5 min', is_locked: false, is_completed: true },
-        { id: 102, title: 'Watch the Video', description: '', type: 'video', order: 2, duration: '21 min', is_locked: false, is_completed: true },
-        { id: 103, title: 'Detailed Summary', description: '', type: 'reading', order: 3, duration: '5 min', is_locked: false, is_completed: true },
-        { id: 104, title: 'Chapter 2 Introduction – Turning Numbers into Knowledge', description: '', type: 'reading', order: 4, duration: '21 min', is_locked: false, is_completed: false },
-        { id: 105, title: 'Watch the Video', description: '', type: 'video', order: 5, duration: '21 min', is_locked: false, is_completed: false },
-    ],
-    duration: '2 hours',
-    updated_at: '2025-07-06',
-    learning_objectives: ['Understand soil basics', 'Perform soil tests', 'Create nutrition programs'],
-    prerequisites: ['Basic biology knowledge'],
-    tags: ['soil', 'nutrition', 'workshop'],
-    instructor: {
-        name: 'Graeme Sait',
-        title: 'Soil Health Expert',
-        bio: 'Graeme Sait is an internationally recognized educator in soil health and sustainable agriculture.',
-        avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
-        location: 'Australia',
-        experience: '30+ years',
-        specializations: ['Soil Health', 'Nutrition', 'Workshops']
-    },
-    price: 0,
-    image: '/how-to-thumbnails-languages/grow-courses.jpeg'
-};
-
-function renderCourseDetail() {
-    $('#courseCategory').html('<i class="bi bi-leaf me-1"></i>' + mockCourse.category);
-    $('#courseLevel').html('<i class="bi bi-bar-chart me-1"></i>' + mockCourse.level);
-    $('#courseType').html('<i class="bi bi-lightbulb me-1"></i>' + mockCourse.type);
-    $('#courseTitle').text(mockCourse.title);
-    $('#courseDescription').text(mockCourse.description);
-    $('#courseDuration').text(mockCourse.duration);
-    $('#courseLessons').text(`${mockCourse.lessons.length} lessons`);
-    $('#courseUpdated').text(`Updated ${mockCourse.updated_at}`);
-    $('#coursePrice').text(mockCourse.price === 0 ? 'Free' : '$' + mockCourse.price);
-    $('#coursePriceDesc').text(mockCourse.price === 0 ? 'No payment required' : 'One-time payment');
-    $('#sidebarLessons').text(`${mockCourse.lessons.length} lessons`);
-    $('#sidebarDuration').text(`${mockCourse.duration} of content`);
-    $('#sidebarImage').attr('src', mockCourse.image);
-    $('#courseLongDescription').text(mockCourse.long_description);
-    // Progress bar
-    const completed = mockCourse.lessons.filter(l => l.is_completed).length;
-    const percent = Math.round((completed / mockCourse.lessons.length) * 100);
-    if (completed > 0) {
-        $('#progressBarSection').show();
-        $('#progressBar').css('width', percent + '%').text(percent + '%');
-        $('#progressText').text(`${completed} of ${mockCourse.lessons.length} lessons completed`);
-        $('#progressPercent').text(percent + '%');
-    } else {
-        $('#progressBarSection').hide();
-    }
-    // Learning objectives
-    $('#learningObjectives').empty();
-    mockCourse.learning_objectives.forEach(obj => $('#learningObjectives').append(`<li class='mb-1'><i class='bi bi-check-circle-fill text-success me-2'></i>${obj}</li>`));
-    // Prerequisites
-    $('#prerequisites').empty();
-    mockCourse.prerequisites.forEach(pr => $('#prerequisites').append(`<li class='mb-1'><i class='bi bi-dot text-secondary me-2'></i>${pr}</li>`));
-    // Tags
-    $('#courseTags').empty();
-    mockCourse.tags.forEach(tag => $('#courseTags').append(`<span class="badge bg-outline-secondary me-1">${tag}</span>`));
-    // Instructor
-    $('#instructorInfo').html(`
-        <div class="d-flex align-items-center mb-3">
-            <img src="${mockCourse.instructor.avatar}" class="rounded-circle me-3" width="80" height="80" alt="Instructor">
-            <div>
-                <h5><i class="bi bi-person-badge me-1"></i>${mockCourse.instructor.name}</h5>
-                <p class="mb-1"><i class="bi bi-award me-1"></i>${mockCourse.instructor.title}</p>
-                <small><i class="bi bi-geo-alt me-1"></i>${mockCourse.instructor.location}</small>
-            </div>
-        </div>
-        <p>${mockCourse.instructor.bio}</p>
-        <p><i class="bi bi-hourglass-split me-1"></i><strong>Experience:</strong> ${mockCourse.instructor.experience}</p>
-        <div><i class="bi bi-stars me-1"></i><strong>Specializations:</strong> ${mockCourse.instructor.specializations.join(', ')}</div>
-    `);
-    // Lessons
-    renderLessons();
-}
-
-function renderLessons() {
-    let html = '';
-    mockCourse.lessons.forEach((lesson, idx) => {
-        const isCompleted = lesson.is_completed;
-        const lessonUrl = `/courses/1/lessons/${lesson.id}`;
-        html += `<div class="d-flex align-items-center justify-content-between p-3 mb-2 rounded-3 ${isCompleted ? '' : 'bg-white'}" style="border: 1px solid #e5e7eb; background: ${isCompleted ? '#eaf5d3' : '#fff'};">
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge" style="background: #8cb33a; color: #fff; font-weight: 600; border-radius: 999px; font-size: 1em;">Lesson ${lesson.order}</span>
-                <span style="font-weight: 600; color: #101828;">${lesson.title}</span>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge" style="background: #fff; color: #101828; font-weight: 600; border-radius: 8px; font-size: 1em; border: 1px solid #e5e7eb;">${lesson.duration}</span>
-                <span class="badge" style="background: #fff; color: #101828; font-weight: 600; border-radius: 8px; font-size: 1em; border: 1px solid #e5e7eb;"><i class="bi bi-${lesson.type === 'video' ? 'camera-video' : 'book'} me-1"></i>${lesson.type}</span>
-                <a href="${lessonUrl}" class="btn btn-sm d-flex align-items-center gap-1" style="background: #8cb33a; color: #fff; border-radius: 8px; font-weight: 600; border: 1.5px solid #8cb33a; font-size: 1em;">${isCompleted ? '<i class=\'bi bi-arrow-repeat\'></i> Review' : '<i class=\'bi bi-play-fill\'></i> Start'}</a>
-            </div>
-        </div>`;
-    });
-    $('#lessonsList').html(html);
-}
-
 $(document).ready(function() {
-    renderCourseDetail();
-    // Tabs
-    $('#courseTabs button').on('click', function() {
-        $('#courseTabs button').removeClass('active').css('color', '#344054').css('border-color', '#fff').css('background', '#fff');
-        $(this).addClass('active').css('color', '#8cb33a').css('border-color', '#8cb33a').css('background', '#fff');
-        $('.tab-pane').removeClass('show active');
-        $($(this).data('bs-target')).addClass('show active');
-    });
-    // In renderCourseDetail, update sidebar button to link to first incomplete lesson
-    $('#enrollBtn').off('click').on('click', function() {
-        const firstIncomplete = mockCourse.lessons.find(l => !l.is_completed) || mockCourse.lessons[0];
-        window.location.href = `/courses/1/lessons/${firstIncomplete.id}`;
-    });
+    // Tab functionality is handled by Bootstrap
+    
+    // Update progress bar based on completed lessons
+    function updateProgress() {
+        // This would be calculated based on user's completed lessons
+        const completedLessons = 0; // Get from user progress
+        const totalLessons = {{ $course->lessons_count }};
+        const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+        
+        $('.progress-bar').css('width', progressPercentage + '%');
+        $('.progress-bar').next().text(completedLessons + ' of ' + totalLessons + ' lessons completed');
+    }
+    
+    // Initialize progress
+    updateProgress();
 });
 </script>
 @endsection

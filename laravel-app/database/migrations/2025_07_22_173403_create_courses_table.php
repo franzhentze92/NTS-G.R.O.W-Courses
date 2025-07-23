@@ -20,8 +20,15 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->unsignedBigInteger('instructor_id')->nullable();
             $table->string('cover_image')->nullable();
-            $table->decimal('price', 8, 2)->nullable();
-            $table->string('status')->default('active');
+            $table->decimal('price', 8, 2)->default(0);
+            $table->string('status')->default('draft');
+            $table->json('tags')->nullable();
+            $table->integer('duration_hours')->default(2);
+            $table->integer('lessons_count')->default(0);
+            $table->integer('students_count')->default(0);
+            $table->decimal('rating', 3, 2)->default(0);
+            $table->boolean('featured')->default(false);
+            $table->boolean('certification')->default(false);
             $table->timestamps();
             $table->foreign('instructor_id')->references('id')->on('instructors')->nullOnDelete();
         });

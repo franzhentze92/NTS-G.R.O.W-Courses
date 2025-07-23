@@ -1,33 +1,39 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CourseController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/courses', function () {
-    return view('courses');
-});
+// Course Catalog (Public)
+Route::get('/courses', [CourseController::class, 'catalog']);
 
-Route::get('/courses/{id}', function ($id) {
-    // For now, just return the mock course detail view
-    return view('course-detail');
-});
+Route::get('/courses/{id}', [CourseController::class, 'show']);
 
-Route::get('/courses/{course}/lessons/{lesson}', function ($course, $lesson) {
-    // For now, just return the mock lesson view
-    return view('lesson');
-});
+// Lesson Page
+Route::get('/courses/{course}/lessons/{lesson}', [CourseController::class, 'showLesson']);
 
-Route::get('/admin/courses', function () {
-    return view('course-management');
-});
+// Admin Routes
+Route::prefix('admin')->group(function () {
+    // Course Management
+    Route::get('/courses', [CourseController::class, 'index']);
+    Route::get('/course-create', [CourseController::class, 'create']);
+    Route::post('/courses', [CourseController::class, 'store']);
+    Route::get('/course-edit/{id}', [CourseController::class, 'edit']);
+    Route::put('/courses/{id}', [CourseController::class, 'update']);
+    Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
+    Route::patch('/courses/{id}/status', [CourseController::class, 'updateStatus']);
+    Route::get('/courses-data', [CourseController::class, 'getCourses']);
 
-Route::get('/admin/instructors', function () {
-    return view('instructor-management');
-});
+    // Instructor Management
+    Route::get('/instructors', function () {
+        return view('instructor-management');
+    });
 
-Route::get('/admin/user-progress', function () {
-    return view('user-progress');
+    // User Progress
+    Route::get('/user-progress', function () {
+        return view('user-progress');
+    });
 });

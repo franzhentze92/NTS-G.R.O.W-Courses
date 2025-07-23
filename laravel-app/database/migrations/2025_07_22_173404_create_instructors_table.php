@@ -12,11 +12,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('title')->nullable();
+            $table->text('bio')->nullable();
             $table->string('email')->nullable();
             $table->string('website')->nullable();
-            $table->string('location')->nullable();
-            $table->text('bio')->nullable();
             $table->string('avatar')->nullable();
+            $table->json('specializations')->nullable();
+            $table->integer('experience_years')->nullable();
+            $table->string('location')->nullable();
+            $table->json('social_links')->nullable();
             $table->timestamps();
         });
     }

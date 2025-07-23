@@ -21,6 +21,8 @@ return new class extends Migration
             $table->longText('content')->nullable();
             $table->string('video_url')->nullable();
             $table->string('document_url')->nullable();
+            $table->integer('duration_minutes')->default(5);
+            $table->json('quiz_data')->nullable(); // For quiz questions and answers
             $table->boolean('is_locked')->default(false);
             $table->timestamps();
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');

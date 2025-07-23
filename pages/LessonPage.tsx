@@ -328,7 +328,16 @@ const LessonPage: React.FC = () => {
 
   const navigateToLesson = (lessonId: string) => {
     console.log('Navigating to lesson:', lessonId);
-    navigate(`/app/education/online-learning/courses/${courseId}/lessons/${lessonId}`);
+    console.log('Current courseId:', courseId);
+    console.log('Navigation path:', `/app/education/online-learning/courses/${courseId}/lessons/${lessonId}`);
+    
+    try {
+      navigate(`/app/education/online-learning/courses/${courseId}/lessons/${lessonId}`);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Fallback: try to navigate using window.location
+      window.location.href = `/app/education/online-learning/courses/${courseId}/lessons/${lessonId}`;
+    }
   };
 
   const isLessonLocked = (lesson: Lesson) => {
@@ -399,19 +408,21 @@ const LessonPage: React.FC = () => {
   // Render lesson content
   return (
     <div className="container mx-auto px-6 py-8">
-      {/* Navigation Header */}
-      <div className="flex items-center justify-between mb-6">
+      {/* Elegant Navigation Header */}
+      <div className="flex items-center justify-between mb-8">
         <Button 
           variant="ghost" 
           onClick={() => navigate(`/app/education/online-learning/courses/${courseId}`)}
+          className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Course
         </Button>
         
         <Button 
-          variant="outline" 
+          variant="ghost" 
           onClick={() => navigate('/app/education/online-learning/courses')}
+          className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors"
         >
           <Home className="mr-2 h-4 w-4" />
           All Courses
@@ -421,36 +432,57 @@ const LessonPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Main Content */}
         <div className="lg:col-span-3">
-          {/* Course Progress Bar */}
+          {/* Elegant Course Progress Bar */}
           {courseProgress && (
-            <Card className="mb-6">
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Course Progress</span>
+            <Card className="mb-6 border-0 shadow-sm">
+              <CardContent className="pt-6 pb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-semibold text-gray-900">Course Progress</span>
                   <span className="text-sm text-gray-600">
                     {courseProgress.completedLessons} of {courseProgress.totalLessons} lessons completed
                   </span>
                 </div>
-                <Progress value={courseProgress.progressPercentage} className="h-2" />
-                <p className="text-sm text-gray-600 mt-1">
+                <Progress 
+                  value={courseProgress.progressPercentage} 
+                  className="h-3 bg-gray-100" 
+                />
+                <p className="text-sm text-gray-600 mt-2 font-medium">
                   {Math.round(courseProgress.progressPercentage)}% complete
                 </p>
               </CardContent>
             </Card>
           )}
 
-          <Card>
-            <CardHeader>
+          <Card className="border-0 shadow-sm">
+            <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-2xl font-bold mb-2">{currentLesson.title}</CardTitle>
-                  <CardDescription className="mb-2">{currentLesson.description}</CardDescription>
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                    <Clock className="h-4 w-4" />
-                    <span>{currentLesson.duration}</span>
-                    <Badge variant="outline" className="ml-2">{currentLesson.type}</Badge>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      {lessonProgress?.is_completed ? (
+                        <CheckCircle className="h-5 w-5 text-[#8cb33a]" />
+                      ) : (
+                        getLessonIcon(currentLesson.type)
+                      )}
+                      <CardTitle className="text-xl font-bold text-gray-900">{currentLesson.title}</CardTitle>
+                    </div>
+                    {currentLesson.type === 'quiz' && (
+                      <Badge variant="default" className="bg-[#8cb33a] text-white text-xs font-medium px-3 py-1">
+                        Lesson 13 quiz 30 min
+                      </Badge>
+                    )}
+                  </div>
+                  <CardDescription className="text-gray-600 mb-3">{currentLesson.description}</CardDescription>
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      <span>{currentLesson.duration}</span>
+                    </div>
+                    <Badge variant="outline" className="text-xs font-medium px-2 py-1">
+                      {currentLesson.type}
+                    </Badge>
                     {lessonProgress?.is_completed && (
-                      <Badge variant="default" className="bg-[#8cb33a]">
+                      <Badge variant="default" className="bg-[#8cb33a] text-white text-xs font-medium px-2 py-1">
                         <CheckCircle className="h-3 w-3 mr-1" />
                         Completed
                       </Badge>
@@ -545,9 +577,75 @@ const LessonPage: React.FC = () => {
               
               {currentLesson.type === 'quiz' && (
                 <div className="mb-6">
-                  <div className="bg-blue-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-4">Quiz</h3>
-                    <p className="text-blue-700">Quiz functionality is coming soon. You'll be able to test your knowledge with interactive questions.</p>
+                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Quiz</h3>
+                      <p className="text-gray-600">
+                        Test your knowledge of soil testing principles, mineral ratios, and interpretation techniques. 
+                        This comprehensive quiz covers all the key concepts from the four chapters of the course.
+                      </p>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      {/* Question 1 */}
+                      <div className="border border-gray-200 rounded-lg p-4">
+                        <h4 className="font-medium text-gray-900 mb-3">
+                          1. What does a high TEC value on an acidic soil primarily indicate?
+                        </h4>
+                        <div className="space-y-2">
+                          {[
+                            "High organic matter",
+                            "High mineral content", 
+                            "High hydrogen saturation",
+                            "High salinity"
+                          ].map((option, index) => (
+                            <label key={index} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                              <input
+                                type="radio"
+                                name="question1"
+                                value={index}
+                                className="h-4 w-4 text-[#8cb33a] border-gray-300 focus:ring-[#8cb33a]"
+                              />
+                              <span className="text-gray-700">{option}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Question 2 */}
+                      <div className="border border-gray-200 rounded-lg p-4">
+                        <h4 className="font-medium text-gray-900 mb-3">
+                          2. If your soil test shows 68% calcium, 12% magnesium, and a pH of 5.2, what is likely missing from the test?
+                        </h4>
+                        <div className="space-y-2">
+                          {[
+                            "Conductivity reading",
+                            "Phosphorus levels",
+                            "Zinc content",
+                            "Organic matter percentage"
+                          ].map((option, index) => (
+                            <label key={index} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                              <input
+                                type="radio"
+                                name="question2"
+                                value={index}
+                                className="h-4 w-4 text-[#8cb33a] border-gray-300 focus:ring-[#8cb33a]"
+                              />
+                              <span className="text-gray-700">{option}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Submit Button */}
+                      <div className="flex justify-center pt-4">
+                        <Button
+                          className="bg-[#8cb33a] hover:bg-[#729428] text-white px-8 py-2"
+                        >
+                          Submit Quiz
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -647,19 +745,47 @@ const LessonPage: React.FC = () => {
                     return (
                       <div
                         key={lesson.id}
-                        className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                        className={`p-3 rounded-lg transition-all duration-200 w-full ${
                           isCurrent
-                            ? 'bg-[#8cb33a] text-white'
+                            ? 'bg-[#8cb33a] text-white shadow-md'
                             : isLocked
                             ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                             : isCompleted
-                            ? 'bg-[#eaf5d3] text-[#8cb33a] hover:bg-[#d4e8b8]'
-                            : 'bg-white border border-gray-200 hover:bg-gray-50'
+                            ? 'bg-[#eaf5d3] text-[#8cb33a] hover:bg-[#d4e8b8] cursor-pointer hover:shadow-sm active:scale-95'
+                            : 'bg-white border border-gray-200 hover:bg-gray-50 cursor-pointer hover:shadow-sm hover:border-[#8cb33a]/30 active:scale-95'
                         }`}
-                        onClick={() => !isLocked && navigateToLesson(lesson.id)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log('Lesson clicked:', lesson.id, 'Locked:', isLocked);
+                          if (!isLocked) {
+                            navigateToLesson(lesson.id);
+                          } else {
+                            console.log('Lesson is locked, cannot navigate');
+                            // Show a simple alert for locked lessons
+                            alert('This lesson is locked. Complete the previous lesson to unlock it.');
+                          }
+                        }}
+                        onMouseDown={(e) => {
+                          // Prevent text selection on click
+                          e.preventDefault();
+                        }}
+                        title={isLocked ? 'Complete the previous lesson to unlock this lesson' : `Click to go to ${lesson.title}`}
+                        role="button"
+                        tabIndex={isLocked ? -1 : 0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            if (!isLocked) {
+                              navigateToLesson(lesson.id);
+                            } else {
+                              alert('This lesson is locked. Complete the previous lesson to unlock it.');
+                            }
+                          }
+                        }}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3 w-full">
+                          <div className="flex items-center gap-2 flex-shrink-0">
                             {isCompleted ? (
                               <CheckCircle className="h-4 w-4" />
                             ) : isLocked ? (
